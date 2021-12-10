@@ -3,7 +3,7 @@ import bodyParser from "body-parser";
 import viewEngine from "./config/viewEngine";
 import initWebRoutes from './route/web';
 import connnectDB from './config/connnectDB';
-import cors from 'cors';
+// import cors from 'cors';
 
 require('dotenv').config();
 
