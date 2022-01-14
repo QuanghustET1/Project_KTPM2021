@@ -17,15 +17,32 @@ let sendSimpleEmail = async (dataSend) => {
         from: '"Quangdeptrai@gmail.com', // sender address
         to: dataSend.receivedUser, // list of receivers
         subject: "Thông tin đặt lịch khám bệnh", // Subject line
-        html: `
-            <h3>Chào bro, ${dataSend.patientName}!</h3>
-            <p>Bạn đã đăng kí khám bệnh thông qua Quangdz.com</p>
-            <p>Thông tin đặt lịch khám bệnh:</p>
-            <div><b>Thời gian: ${dataSend.time}</b></div>
-            <div><b>Bác sĩ: ${dataSend.doctorName}</b></div>
-            <p>Vui lòng xác nhận thông tin bằng cách click vào link xác nhận : <a href="https://www.facebook.com/Quang.hust.et1.bka01" target="_blank">Click here</a></p>
-        `, // html body
+        html: getBodyHTMLEmail(dataSend), // html body
     });
+}
+let getBodyHTMLEmail = (dataSend) => {
+    let result = '';
+    if (dataSend.language === 'vi') {
+        result =
+            `<h3>Chào bro, ${dataSend.patientName}!</h3>
+        <p>Bạn đã đặt lịch thành công tại web Quangdeptrai.vn với thông tin như sau:</p>
+        <p>Thông tin đặt lịch</p>
+        <div><b>Thời gian: ${dataSend.time}</b></div>
+        <div><b>Bác sĩ: ${dataSend.doctorName}</b></div>
+        <p>Vui lòng xác nhận thông tin trên bằng cách click vào link:<a href=${dataSend.redirectLink} target="_blank">Click here</a></p>
+        <p>Chân thành cảm ơn</p>`
+    }
+    if (dataSend.language === 'en') {
+        result =
+            `<h3>Chào bro, ${dataSend.patientName}!</h3>
+        <p>Bạn đã đặt lịch thành công tại web Quangdeptrai.vn với thông tin như sau:</p>
+        <p>Thông tin đặt lịch</p>
+        <div><b>Thời gian: ${dataSend.time}</b></div>
+        <div><b>Bác sĩ: ${dataSend.doctorName}</b></div>
+        <p>Vui lòng xác nhận thông tin trên bằng cách click vào link:<a href=${dataSend.redirectLink} target="_blank">Click here</a></p>
+        <p>Chân thành cảm ơn</p>`
+    }
+    return result;
 }
 
 
