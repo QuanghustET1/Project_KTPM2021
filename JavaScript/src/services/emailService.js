@@ -46,6 +46,56 @@ let getBodyHTMLEmail = (dataSend) => {
 }
 
 
+let getBodyHTMLEmailRemedy = (dataSend) => {
+    let result = '';
+    if (dataSend.language === 'vi') {
+        result =
+            `<h3>Chào bro, ${dataSend.patientName}!</h3>
+        <p>Bạn nhận được email này vì đã đặt lịch khám bệnh online trên website Quanghandsome.vn</p>
+        <p>Thông tin đặt lịch được gửi trong tệp đính kèm</p>
+        <p>Chân thành cảm ơn</p>`
+    }
+    if (dataSend.language === 'en') {
+        result =
+            `<h3>Chào bro, ${dataSend.patientName}!</h3>
+        <p>Bạn nhận được email này vì đã đặt lịch khám bệnh online trên website Quanghandsome.vn</p>
+        <p>Thông tin đặt lịch được gửi trong tệp đính kèm</p>
+        <p>Chân thành cảm ơn</p>`
+    }
+    return result;
+}
+
+let sendAttachment = async (dataSend) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let transporter = nodemailer.createTransport({
+                host: "smtp.gmail.com",
+                port: 587,
+                secure: false,
+                auth: {
+                    user: process.env.MAIL_APP,
+                    pass: process.env.MAIL_APP_PASSWORD
+                }
+            });
+            let infor = await transporter.sendMail({
+                from: '"Quangdeptrai@gmail.com', // sender address
+                to: dataSend.email, // list of receivers
+                subject: "Kết quả đặt lịch khám bệnh", // Subject line
+                html: getBodyHTMLEmailRemedy(dataSend), // html body
+                attachments: [
+                    {
+                        filename: `remedy-${dataSend.patientId}-${new Date().getTime()}.png`,
+                        content: dataSend.imgBase64.split("base64,")[1],
+                        encoding: 'base64'
+                    }
+                ]
+            });
+            resolve(true)
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
 
 // async..await is not allowed in global scope, must use a wrapper
 async function main() {
@@ -65,5 +115,6 @@ async function main() {
 }
 
 module.exports = {
-    sendSimpleEmail: sendSimpleEmail
+    sendSimpleEmail: sendSimpleEmail,
+    sendAttachment: sendAttachment
 }

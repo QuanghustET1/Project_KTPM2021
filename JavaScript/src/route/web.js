@@ -38,6 +38,7 @@ let initWebRoutes = (app) => {
     router.get('/api/get-specialty', SpecialtyController.getAllSpecialty);
     router.get('/api/get-detail-specialty-by-id', SpecialtyController.getDetailSpecialtyById);
     router.get('/api/get-list-patient-by-doctor', doctorController.getListPatientForDoctor);
+    router.post('/api/send-remedy', doctorController.sendRemedy)
 
     return app.use("/", router);
 }
