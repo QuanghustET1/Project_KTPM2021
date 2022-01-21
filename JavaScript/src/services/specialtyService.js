@@ -49,7 +49,75 @@ let getAllSpecialty = () => {
     })
 }
 
+let getDetailSpecialtyById = (inputId, location) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!inputId || !location) {
+                resolve({
+                    errCode: 1,
+                    errMessage: "Missing parameter"
+                })
+            } else {
+                let data = {};
+                let data_temp = await db.Specialty.findOne({
+                    where: {
+                        id: inputId
+                    },
+                    attributes: ['descriptionHTML', 'descriptionMarkdown']
+                })
+                if (data_temp) {
+                    if (location === 'ALL') {
+                        data.descriptionHTML = await db.Specialty.findOne({
+                            where: {
+                                id: inputId
+                            },
+                            attributes: ['descriptionHTML'],
+                        })
+                        data.descriptionMarkdown = await db.Specialty.findOne({
+                            where: {
+                                id: inputId
+                            },
+                            attributes: ['descriptionMarkdown'],
+                        })
+                        let doctorSpecialty = await db.Doctor_infor.findAll({
+                            where: { specialtyId: inputId },
+                            attributes: ['doctorId', 'provinceId'],
+                        })
+                        data.doctorSpecialty = doctorSpecialty;
+                    } else {
+                        data.descriptionHTML = await db.Specialty.findOne({
+                            where: {
+                                id: inputId
+                            },
+                            attributes: ['descriptionHTML'],
+                        })
+                        data.descriptionMarkdown = await db.Specialty.findOne({
+                            where: {
+                                id: inputId
+                            },
+                            attributes: ['descriptionMarkdown'],
+                        })
+                        let doctorSpecialty = await db.Doctor_infor.findAll({
+                            where: { specialtyId: inputId, provinceId: location },
+                            attributes: ['doctorId', 'provinceId'],
+                        })
+                        data.doctorSpecialty = doctorSpecialty;
+                    }
+                } else data = {}
+                resolve({
+                    errMessage: 'ok',
+                    errCode: 0,
+                    data
+                })
+            }
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
 module.exports = {
     createSpecialty: createSpecialty,
-    getAllSpecialty: getAllSpecialty
+    getAllSpecialty: getAllSpecialty,
+    getDetailSpecialtyById: getDetailSpecialtyById
 }
