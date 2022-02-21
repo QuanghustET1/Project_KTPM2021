@@ -80,7 +80,7 @@ let sendAttachment = async (dataSend) => {
             let infor = await transporter.sendMail({
                 from: '"Quangdeptrai@gmail.com', // sender address
                 to: dataSend.email, // list of receivers
-                subject: "Kết quả đặt lịch khám bệnh", // Subject line
+                subject: "Xác nhận đặt lịch thành công", // Subject line
                 html: getBodyHTMLEmailRemedy(dataSend), // html body
                 attachments: [
                     {
